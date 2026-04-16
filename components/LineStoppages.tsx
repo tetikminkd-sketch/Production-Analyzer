@@ -69,6 +69,15 @@ export default function LineStoppages({ data, onUpdateReport, language = 'en' }:
     onUpdateReport(updatedReport);
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+    return dateString;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
@@ -150,7 +159,7 @@ export default function LineStoppages({ data, onUpdateReport, language = 'en' }:
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {stoppages.map((stoppage) => (
                   <tr key={stoppage.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">{stoppage.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{formatDate(stoppage.date)}</td>
                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{stoppage.reason}</td>
                     <td className="px-6 py-4 text-right">{stoppage.personnelCount}</td>
                     <td className="px-6 py-4 text-right">{stoppage.durationMinutes}</td>

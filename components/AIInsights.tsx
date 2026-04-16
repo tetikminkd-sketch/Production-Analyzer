@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { generateInsightsClient } from '@/lib/gemini';
+import { generateInsights } from '@/app/actions/generateInsights';
 import { AnalysisResult } from '@/lib/types';
 import { Loader2, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -26,7 +26,7 @@ export default function AIInsights({ data, language = 'en' }: AIInsightsProps) {
       
       setLoading(true);
       try {
-        const res = await generateInsightsClient(data, language);
+        const res = await generateInsights(data, language);
         if (isMounted) setInsights(res);
       } catch (err) {
         console.error(err);

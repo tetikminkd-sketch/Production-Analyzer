@@ -1,8 +1,11 @@
-import { GoogleGenAI } from "@google/genai";
-import { AnalysisResult } from "./types";
-import { Language } from "./i18n";
 
-export async function generateInsightsClient(data: AnalysisResult, language: Language = 'en') {
+'use server';
+
+import { GoogleGenAI } from "@google/genai";
+import { AnalysisResult } from "@/lib/types";
+import { Language } from "@/lib/i18n";
+
+export async function generateInsights(data: AnalysisResult, language: Language = 'en') {
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   if (!apiKey) {
     console.error("API Key is missing");
@@ -13,6 +16,7 @@ export async function generateInsightsClient(data: AnalysisResult, language: Lan
   
   const langName = language === 'tr' ? 'Turkish' : 'English';
   
+  // Summarize data to avoid token limits if necessary, but for now send key metrics
   const summary = {
     overallEfficiency: data.overallEfficiency.toFixed(2),
     totalProductionTime: data.totalProductionTime.toFixed(2),

@@ -412,9 +412,20 @@ export default function Charts({ data, reports, language = 'en' }: ChartsProps) 
       const totalUsedTime = report.totalUsedTime || 0;
       
       const rate = totalUsedTime > 0 ? (totalStoppageLoss / totalUsedTime) * 100 : 0;
+      
+      let displayDate = report.reportName;
+      if (report.lineStoppages && report.lineStoppages.length > 0) {
+        const d = report.lineStoppages[0].date;
+        const parts = d.split('-');
+        if (parts.length === 3) {
+          displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+        } else {
+          displayDate = d;
+        }
+      }
 
       return {
-        date: report.reportName,
+        date: displayDate,
         rate: parseFloat(rate.toFixed(2)),
         timestamp: new Date(report.uploadDate).getTime()
       };

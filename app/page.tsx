@@ -6,7 +6,7 @@ import FileUpload from '@/components/FileUpload';
 import Dashboard from '@/components/Dashboard';
 import { AnalysisResult } from '@/lib/types';
 import { Plus, FileText, Trash2, Edit2, Check, X, Menu, Save, Loader2, ArrowUpDown } from 'lucide-react';
-import { saveReportLocal, getSavedReportsLocal, deleteReportLocal } from '@/lib/storage';
+import { saveReport, getSavedReports, deleteReport } from './actions/reportActions';
 import { Language, translations } from '@/lib/i18n';
 import LanguageThemeToggle from '@/components/LanguageThemeToggle';
 
@@ -28,9 +28,9 @@ export default function Home() {
 
   // Load saved reports on mount
   useEffect(() => {
-    const loadReports = () => {
+    const loadReports = async () => {
       try {
-        const savedReports = getSavedReportsLocal();
+        const savedReports = await getSavedReports();
         setReports(savedReports);
       } catch (error) {
         console.error('Failed to load reports:', error);
@@ -47,7 +47,7 @@ export default function Home() {
     // Auto-save all newly uploaded reports
     for (const report of newReports) {
       try {
-        saveReportLocal(report);
+        await saveReport(report);
       } catch (error) {
         console.error('Failed to auto-save report:', error);
       }
@@ -55,7 +55,7 @@ export default function Home() {
     
     // Refresh the list from storage to ensure consistency
     try {
-      const savedReports = getSavedReportsLocal();
+      const savedReports = await getSavedReports();
       setReports(savedReports);
     } catch (error) {
       console.error('Failed to refresh reports:', error);
@@ -69,11 +69,11 @@ export default function Home() {
   const handleSave = async (report: AnalysisResult) => {
     setIsSaving(true);
     try {
-      const result = saveReportLocal(report);
+      const result = await saveReport(report);
       if (result.success) {
         // Optionally show a success toast here
         // Refresh list to ensure sync (though we already have it in state)
-        const savedReports = getSavedReportsLocal();
+        const savedReports = await getSavedReports();
         setReports(savedReports);
       }
     } catch (error) {
@@ -91,7 +91,7 @@ export default function Home() {
   const confirmDelete = async () => {
     if (reportToDelete) {
       try {
-        deleteReportLocal(reportToDelete);
+        await deleteReport(reportToDelete);
         setReports(prev => prev.filter(r => r.id !== reportToDelete));
         if (activeReportId === reportToDelete) {
           setActiveReportId(null);
